@@ -88,3 +88,19 @@ fastlane/test_output
 # https://github.com/johnno1962/injectionforxcode
 
 iOSInjectionProject/
+
+# Misc
+.DS_Store
+
+# .NET
+
+[Oo]bj/
+[Bb]in/
+*.sln.ide/
+.vscode/
+signalr-client/
+node_modules/
+Server/wwwroot/js
+.vs/
+*.user
+*.suo
