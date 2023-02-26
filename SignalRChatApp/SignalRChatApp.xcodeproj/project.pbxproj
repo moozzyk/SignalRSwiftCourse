@@ -11,6 +11,7 @@
 		5A62CA0529AB27C900E566CE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A62CA0429AB27C900E566CE /* ContentView.swift */; };
 		5A62CA0729AB27CC00E566CE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5A62CA0629AB27CC00E566CE /* Assets.xcassets */; };
 		5A62CA0A29AB27CC00E566CE /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5A62CA0929AB27CC00E566CE /* Preview Assets.xcassets */; };
+		5A62CA1229AB2CF800E566CE /* SignalRClient in Frameworks */ = {isa = PBXBuildFile; productRef = 5A62CA1129AB2CF800E566CE /* SignalRClient */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5A62CA1229AB2CF800E566CE /* SignalRClient in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -83,6 +85,9 @@
 			dependencies = (
 			);
 			name = SignalRChatApp;
+			packageProductDependencies = (
+				5A62CA1129AB2CF800E566CE /* SignalRClient */,
+			);
 			productName = SignalRChatApp;
 			productReference = 5A62C9FF29AB27C900E566CE /* SignalRChatApp.app */;
 			productType = "com.apple.product-type.application";
@@ -111,6 +116,9 @@
 				Base,
 			);
 			mainGroup = 5A62C9F629AB27C900E566CE;
+			packageReferences = (
+				5A62CA1029AB2CF800E566CE /* XCRemoteSwiftPackageReference "SignalR-Client-Swift" */,
+			);
 			productRefGroup = 5A62CA0029AB27C900E566CE /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -337,6 +345,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		5A62CA1029AB2CF800E566CE /* XCRemoteSwiftPackageReference "SignalR-Client-Swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/moozzyk/SignalR-Client-Swift";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		5A62CA1129AB2CF800E566CE /* SignalRClient */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5A62CA1029AB2CF800E566CE /* XCRemoteSwiftPackageReference "SignalR-Client-Swift" */;
+			productName = SignalRClient;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 5A62C9F729AB27C900E566CE /* Project object */;
 }
