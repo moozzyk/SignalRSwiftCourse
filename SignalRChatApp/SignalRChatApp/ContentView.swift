@@ -8,7 +8,7 @@
 import SwiftUI
 import SignalRClient
 
-struct Message: Hashable {
+struct Message: Hashable, Codable {
     let name: String
     let text: String
 
@@ -105,7 +105,7 @@ struct ContentView: View {
                     .textFieldStyle(RoundedBorderTextFieldStyle())
 
                 Button(action: {
-                    chatHubConnection.send(method: "Broadcast", name, newMessage) {
+                    chatHubConnection.send(method: "Broadcast", Message(name: name, text: newMessage)) {
                         error in
                         if let e = error {
                             errorMessage = "\(e)"
@@ -130,8 +130,8 @@ struct ContentView: View {
             chatHubDelegate.connectionWillReconnectFunc = connectionWillReconnect
             chatHubDelegate.connectionDidReconnectFunc = connectionDidReconnect
 
-            chatHubConnection.on(method: "NewMessage") {(name: String, text: String) in
-                self.messages.append(Message(name: name, text: text))
+            chatHubConnection.on(method: "NewMessage") {(message: Message) in
+                self.messages.append(message)
             }
         }
         .padding()
