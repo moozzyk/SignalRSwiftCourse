@@ -22,6 +22,8 @@ fileprivate class ChatHubDelegate: HubConnectionDelegate {
     var connectionDidOpenFunc: ((HubConnection) -> Void)?
     var connectionDidFailToOpenFunc: ((Error) -> Void)?
     var connectionDidCloseFunc: ((Error?) -> Void)?
+    var connectionWillReconnectFunc: ((Error) -> Void)?
+    var connectionDidReconnectFunc: (() -> Void?)?
 
     func connectionDidOpen(hubConnection: SignalRClient.HubConnection) {
         connectionDidOpenFunc?(hubConnection)
@@ -34,6 +36,14 @@ fileprivate class ChatHubDelegate: HubConnectionDelegate {
     func connectionDidClose(error: Error?) {
         connectionDidCloseFunc?(error)
     }
+
+    func connectionWillReconnect(error: Error) {
+        connectionWillReconnectFunc?(error)
+    }
+
+    func connectionDidReconnect() {
+        connectionDidReconnectFunc?()
+    }
 }
 
 struct ContentView: View {
@@ -42,6 +52,7 @@ struct ContentView: View {
         case name
         case error
         case errorRestart
+        case reconnect
     }
 
     @State private var popupKind: PopupKind = .name
@@ -67,9 +78,18 @@ struct ContentView: View {
         }
     }
 
+    func connectionWillReconnect(error: Error) {
+        popupKind = .reconnect
+    }
+
+    func connectionDidReconnect() {
+        popupKind = .none
+    }
+
     init() {
         chatHubConnection = HubConnectionBuilder(url: URL(string: "http://192.168.86.25:5000/chat")!)
             .withHubConnectionDelegate(delegate: chatHubDelegate)
+            .withAutoReconnect()
             .build()
     }
 
@@ -107,6 +127,8 @@ struct ContentView: View {
             chatHubDelegate.connectionDidOpenFunc = connectionDidOpen
             chatHubDelegate.connectionDidFailToOpenFunc = connectionDidFailToOpen
             chatHubDelegate.connectionDidCloseFunc = connectionDidClose
+            chatHubDelegate.connectionWillReconnectFunc = connectionWillReconnect
+            chatHubDelegate.connectionDidReconnectFunc = connectionDidReconnect
 
             chatHubConnection.on(method: "NewMessage") {(name: String, text: String) in
                 self.messages.append(Message(name: name, text: text))
@@ -137,6 +159,11 @@ struct ContentView: View {
             },
                message: {
                 Text(errorMessage)
+        })
+        .alert("Connection lost", isPresented: .constant(popupKind == .reconnect), actions: {
+            Button("", action: {})
+        }, message: {
+            Text("Reconnecting...")
         })
     }
 }
