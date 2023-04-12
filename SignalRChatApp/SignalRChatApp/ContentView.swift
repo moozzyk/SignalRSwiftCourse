@@ -60,6 +60,7 @@ struct ContentView: View {
     @State private var messages: [Message] = []
     @State private var newMessage = ""
     @State private var name = ""
+    @State private var streamHandle: StreamHandle? = nil
     private let chatHubConnection: HubConnection
     private let chatHubDelegate = ChatHubDelegate()
 
@@ -105,6 +106,39 @@ struct ContentView: View {
                     .textFieldStyle(RoundedBorderTextFieldStyle())
 
                 Button(action: {
+                    if newMessage == "/dadjoke" {
+                        chatHubConnection.invoke(method: "DadJoke", resultType: String.self) {
+                            joke, error in
+                            if let e = error {
+                                errorMessage = "\(e)"
+                                popupKind = .error
+                            } else {
+                                messages.append(Message(name: "Dad", text: joke ?? "Dad is tired today"))
+                                newMessage = ""
+                            }
+                            return
+                        }
+                    }
+                    if newMessage == "/count" {
+                        guard streamHandle == nil else {
+                            return
+                        }
+
+                        streamHandle = chatHubConnection.stream(method: "CountDown", 5, streamItemReceived: {(n:Int) in self.messages.append(Message(name: "Counter", text: "\(n)"))}, invocationDidComplete: { error in
+                            self.messages.append(Message(name: "Counter", text: "Counting finished"))
+                            streamHandle = nil
+                        })
+                        newMessage = ""
+                        return
+                    }
+                    if newMessage == "/cancel" {
+                        guard streamHandle != nil else {
+                            return
+                        }
+                        chatHubConnection.cancelStreamInvocation(streamHandle: streamHandle!) {_ in }
+                        newMessage = ""
+                        return
+                    }
                     chatHubConnection.send(method: "Broadcast", Message(name: name, text: newMessage)) {
                         error in
                         if let e = error {
