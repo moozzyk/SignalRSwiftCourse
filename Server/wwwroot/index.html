@@ -28,7 +28,7 @@
         .withUrl('/chat')
         .build();
 
-    hubConnection.on('NewMessage', (sender, message) => {
+    hubConnection.on('NewMessage', ({name: sender, text: message}) => {
         var child = document.createElement('li');
         child.innerHTML = `<strong>${sender}</strong>:&nbsp;&nbsp;${message}</li>`;
         document.getElementById('discussion').appendChild(child);
@@ -37,7 +37,7 @@
     hubConnection.start().then(() => {
         document.getElementById('sendmessage').addEventListener('click', event => {
             let messageTextBox = document.getElementById('message');
-            hubConnection.invoke('Broadcast', name, messageTextBox.value);
+            hubConnection.invoke('Broadcast', {name, text: messageTextBox.value});
             messageTextBox.value = "";
             event.preventDefault();
         });
